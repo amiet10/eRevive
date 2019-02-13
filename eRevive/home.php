@@ -172,7 +172,7 @@ $sql = "SELECT * FROM products WHERE (title LIKE ?) OR (category LIKE ?) OR (des
 			if($resultCheck == 0){
 				echo("no results found");
 			}else{
-				while($row = mysqli_fetch_assoc($result)){
+				while($row = mysqli_fetch_assoc($stmt)){
 					echo "<tr>
 				<td>".$row['title']."</td>
 				<td>".$row['category']." </td>
