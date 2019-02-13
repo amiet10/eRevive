@@ -97,16 +97,6 @@ header('location:login.php');
 		
 		while ($stmt->fetch()){
 			
-			/*echo "<tr>
-				<td>".$title."</td>
-				<td>".$category."</td>
-				<td>".$description."</td>
-				<td>£".$price."</td>
-				<td><img class='responsive-img' src='images/".$image.".jpg'></td>
-				<td><a href='update.php?id=".$id."'class='waves-effect waves-light btn'>Update</a></td>
-				<td><a href='delete-listing.php?id=".$id."'class='waves-effect waves-light btn red darken-4'>Delete</a></td>
-	            </tr>";*/
-			
 			echo "<tr>
 				<td>".$title."</td>
 				<td>".$category."</td>

@@ -6,24 +6,25 @@
 <?php include('includes/dbconx.php');
 	require('includes/errorChk.php');
 	ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-	 
+    ini_set('display_startup_errors', 1);
+    error_reporting(E_ALL);
+
+ //setting up ads so that they change each time the page is loaded
 //declare variable and assign pathname and associated URL value for each banner
 $Img1 = "images/ad1.jpg"; $Url1 = "https://www.marksandspencer.com/";
 $Img2 = "images/ad2.jpg"; $Url2 = "https://www.uktights.com/";
 $Img3 = "images/ad3.jpg"; $Url3 = "https://www.currys.co.uk/gbuk/index.html/";
-	$Img4 = "images/ad4.jpg"; $Url4 = "https://www.motel-one.com/en//";
-	$Img5 = "images/ad5.jpg"; $Url5 = "https://www.coca-cola.co.uk/";
-	$Img6 = "images/ad6.jpg"; $Url6 = "https://www.fanta.com/";
+$Img4 = "images/ad4.jpg"; $Url4 = "https://www.motel-one.com/en//";
+$Img5 = "images/ad5.jpg"; $Url5 = "https://www.coca-cola.co.uk/";
+$Img6 = "images/ad6.jpg"; $Url6 = "https://www.fanta.com/";
 	
 
-//declare and assign random number range 1 to 3
+//declare and assign random number range
 $num1 = rand (1,3);
-	$num2 = rand(4,6);
+$num2 = rand(4,6);
 $Image1 = ${'Img'.$num1};
 $URL1 = ${'Url'.$num1};
-	$Image2 = ${'Img'.$num2};
+$Image2 = ${'Img'.$num2};
 $URL2 = ${'Url'.$num2};
 
 ?>
@@ -70,16 +71,15 @@ $URL2 = ${'Url'.$num2};
 
 
 <div class="row">
+
 	<aside class="col s3 offset-s1">
-	
+	<!--php code for adverts-->
 	<?php
 echo "<a href=".$URL1."><img class='responsive-img' src=".$Image1."></a>";
 		echo "<a href=".$URL2."><img class='responsive-img' src=".$Image2."></a>";
 
 ?>
-		<!--<img class="responsive-img" src="images/ad1.jpg">
-		<img class="responsive-img" src="images/ad2.jpg">-->
-	</aside>
+    </aside>
 
 
 
@@ -144,85 +144,58 @@ echo "<a href=".$URL1."><img class='responsive-img' src=".$Image1."></a>";
 	}
 	};
 		
-		//trying prepared statement
+
 	
-		
+	//search code using a prepared statement
 	if(isset($_GET['search'])){
 		
 	
 	//setting info from form as variables
 	$productQuery = "%".$_GET['productQuery']."%";
-	if(isset($productQuery) && !empty($productQuery)){
-	
-$sql = "SELECT * FROM products WHERE (title LIKE ?) OR (category LIKE ?) OR (description LIKE ?)  ORDER BY price";
-	$stmt = mysqli_stmt_init($conn);
-		if(!mysqli_stmt_prepare($stmt, $sql)){
-			header("location:signup.php?error=sqlerror");
-		exit();
-		}else{
-			mysqli_stmt_bind_param($stmt, "sss", $productQuery, $productQuery, $productQuery);
-			mysqli_stmt_execute($stmt);
-			
-			$result = mysqli_stmt_get_result($stmt);
-			//takes results from database and stores it back into stmt
-			//mysqli_stmt_store_result($stmt);
-			//how many results?
-			$resultCheck = mysqli_stmt_num_rows($result);
-				//if($row = mysqli_fetch_assoc($result)){
-			if($resultCheck == 0){
-				echo("no results found");
-			}else{
-				while($row = mysqli_fetch_assoc($stmt)){
-					echo "<tr>
-				<td>".$row['title']."</td>
-				<td>".$row['category']." </td>
-				<td>".$row['description']." </td>
-				<td><img class='responsive-img' src='images/".$row['image'].".jpg'></td>
-				<td>".$row['price']." </td>
+	if(isset($productQuery) && !empty($productQuery)) {
+
+        $sql = "SELECT * FROM products WHERE (title LIKE ?) OR (category LIKE ?) OR (description LIKE ?)  ORDER BY price";
+        $stmt = mysqli_stmt_init($conn);
+
+        //checking if the SQL statement will work
+        if (!mysqli_stmt_prepare($stmt, $sql)) {
+            header("location:signup.php?error=sqlerror");
+            exit();
+        } else {
+            //binding the parameters to the placeholder
+            mysqli_stmt_bind_param($stmt, "sss", $productQuery, $productQuery, $productQuery);
+           //running the parameters inside the database
+            mysqli_stmt_execute($stmt);
+
+            //creating a variable for the result
+            $result = mysqli_stmt_get_result($stmt);
+
+            //while loop to display data while there are results
+            while ($row = mysqli_fetch_assoc($result)) {
+                echo "<tr>
+				<td>" . $row['title'] . "</td>
+				<td>" . $row['category'] . " </td>
+				<td>" . $row['description'] . " </td>
+				<td><img class='responsive-img' src='images/" . $row['image'] . ".jpg'></td>
+				<td>" . $row['price'] . " </td>
 				</tr>";
-				}
-			}
-				
-		
-				
-			}
-			mysqli_stmt_close($stmt);	
-	mysqli_close($conn);//closes connection to the database
-		}
-	 		/*while($row = mysqli_fetch_array($sql)){//and while there are rows in the database pulled through from the query then echo out the below HTML concatonated with the row information//
-        		echo "<tr>
-				<td>".$row["title"]."</td>
-				<td>".$row["category"]." </td>
-				<td>".$row["description"]." </td>
-				<td><img class='responsive-img' src='images/".$row['image'].".jpg'></td>
-				<td>".$row["price"]." </td>
-				</tr>";
-			}//end of while loop
-		}//end of else statement*/
-	//mysqli_stmt_close($stmt);	
-	//mysqli_close($conn);//closes connection to the database
-				
-			}
-		
-	//}
-	
-
-	
-	
+            }
+        }echo ('No results found.  Try searching again.');
+    }
+    }
 
 
-	
+
 		
 	//code for searching for a product
 	/*if(isset($_GET['search'])){
 	$productQuery = $_GET['productQuery']; //store form 'musicQuery' data//
-		//$productQuery = "%{$_GET['productQuery']}%";
+		$productQuery = "%{$_GET['productQuery']}%";
 		if(isset($productQuery) && !empty($productQuery)){ //check if variable data sent is null or empty - no value has been sent//
 		
-			//$sql = "SELECT * FROM products WHERE (category LIKE ?) OR (description LIKE ?) OR (title LIKE ?)";
+			$sql = "SELECT * FROM products WHERE (category LIKE ?) OR (description LIKE ?) OR (title LIKE ?)";
 			require('includes/dbconx.php'); //if data is there then connect to the database - instructions for which are found in dbconx.php//
-		
-			//the next two bits work!!!
+
 			$searchq = mysqli_real_escape_string($conn, $productQuery);//SECURITY FEATURE - remove special characters and clean up string- $searchq stores the clean search data send from the form//
 		
 			$sql = mysqli_query($conn, "SELECT * FROM products WHERE (title LIKE '%$searchq%') OR (category LIKE '%$searchq%') OR (description LIKE '%$searchq%')  ORDER BY price");//$sql stores a wildcard sql statement//
@@ -265,12 +238,13 @@ $sql = "SELECT * FROM products WHERE (title LIKE ?) OR (category LIKE ?) OR (des
 	?>
 	
 	</table>
-	
-	 
+
+
+	 <!--getting description to pull through from database on modal-->
 	<!-- 	 <div id="modal2" class="modal">
     <div class="modal-content">
       <h4>Modal Header</h4>
-      <p><?php echo $description ?></p>
+      <p><?php //echo $description ?></p>
     </div>
     <div class="modal-footer">
       <a href="#" class="modal-close waves-effect waves-green btn-flat">Close</a>
