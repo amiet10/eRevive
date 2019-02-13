@@ -167,10 +167,12 @@ $sql = "SELECT * FROM products WHERE (title LIKE ?) OR (category LIKE ?) OR (des
 			//takes results from database and stores it back into stmt
 			//mysqli_stmt_store_result($stmt);
 			//how many results?
-			$resultCheck = mysqli_stmt_num_rows($stmt);
-				if($row = mysqli_fetch_assoc($result)){
-			//if($resultCheck > 0){
-				//while($row = mysqli_fetch_assoc($stmt)){
+			$resultCheck = mysqli_stmt_num_rows($result);
+				//if($row = mysqli_fetch_assoc($result)){
+			if($resultCheck == 0){
+				echo("no results found");
+			}else{
+				while($row = mysqli_fetch_assoc($result)){
 					echo "<tr>
 				<td>".$row['title']."</td>
 				<td>".$row['category']." </td>
@@ -179,11 +181,10 @@ $sql = "SELECT * FROM products WHERE (title LIKE ?) OR (category LIKE ?) OR (des
 				<td>".$row['price']." </td>
 				</tr>";
 				}
-			
+			}
 				
-			else{
-				echo("no results found");
-			
+		
+				
 			}
 			mysqli_stmt_close($stmt);	
 	mysqli_close($conn);//closes connection to the database
@@ -202,7 +203,7 @@ $sql = "SELECT * FROM products WHERE (title LIKE ?) OR (category LIKE ?) OR (des
 	//mysqli_close($conn);//closes connection to the database
 				
 			}
-		}
+		
 	//}
 	
 
